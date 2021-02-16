@@ -1,0 +1,68 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>LO9</title>
+
+</head>
+<style type="text/css">
+    @page {
+        size: letter portrait;
+        @frame content_frame {
+            left: 50pt;
+            width: 512pt;
+            top: 50pt;
+            height: 692pt;
+        }
+    }
+
+    html {
+        font-family: Arial, serif;
+    }
+</style>
+<body>
+<h1 style="font-size:25px; text-align: center; text-decoration: underline">Žiadosť</h1>
+<p style="font-size: 15px; display: block; margin-top: 25px; margin-bottom: 50px;">O sprístupnenie informácií podľa zákona č.211/2000 Zz. o slobodnom prístupe k informáciám a o zmene a doplnení
+    niektorých zákonov (zákon o slobode informácií) v znení neskorších predpisov.
+</p>
+
+<span style="margin-bottom: 5px; display: block"><b>Povinná osoba, ktorej je žiadosť určená:</b></span>
+<span style="display: block; margin-bottom: 25px">{{ data.client_name }}</span>
+
+<span style="margin-bottom: 5px; display: block"><b>Adresa povinnej osoby:</b></span>
+<span style="display: block; margin-bottom: 25px">{{ data.client_address }}</span>
+
+<span style="margin-bottom: 5px; display: block"><b>Meno a priezvisko, názov alebo obchodné meno žiadateľa:</b></span>
+<span style="display: block; margin-bottom: 25px">{{ data.sender_name }}</span>
+
+<span style="margin-bottom: 5px; display: block"><b>Adresa pobytu alebo sídlo žiadateľa:</b></span>
+<span style="display: block; margin-bottom: 25px">{{ data.sender_address }}</span>
+
+<span style="margin-bottom: 5px; display: block"><b>Požadovaný spôsob sprístupnenia informácií:</b></span>
+<span style="display: block; margin-bottom: 25px">{{ data.way }}</span>
+
+<span style="margin-bottom: 5px; display: block"><b>Požadované informácie:</b></span>
+<span style="display: block; margin-bottom: 25px">{{ data.info }}</span>
+
+
+<div style="position: absolute; bottom: 0%; display: block; width: 100%; margin-bottom: 100px;">
+    <div style="width: 100%; margin-bottom: 25px; display: block; float: left;">
+        <span style="width: 50%; float: left; text-align: left; display: block"><b>Dátum:</b></span>
+        <span style="width: 50%; float: left; display: block; text-align: right">{{ data.date }}</span>
+    </div>
+
+    <div style="width: 100%; display: block">
+        <span style="width: 50%; float: left; text-align: left; display: block"><b>Podpis žiadateľa:</b></span>
+        <span style="width: 50%; float: left; display: block; text-align: right">.......................................................</span>
+    </div>
+</div>
+
+
+
+
+
+<h4></h4>
+</body>
+</html>

@@ -1,0 +1,13 @@
+/*.carousel .carousel-item img {
+    max-height: 400px;
+    min-width: auto;
+}*/
+
+.container-t {
+    height: 400px;
+    width: 100%;
+}
+
+.carousel-caption {
+    text-shadow: 1px 1px 10px #1a1e21;
+}

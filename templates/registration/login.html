@@ -1,0 +1,45 @@
+{% extends 'index.html' %}
+{% load crispy_forms_filters %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="row mt-5 container mx-auto">
+    <div class="col-sm-8 col-md-6 col-xl-4 mx-auto">
+        <h2>Prihlásenie</h2>
+        <form method="post" class="form">
+            {% csrf_token %}
+        <div class="mb-3">
+            <label for="{{ form.username.id_for_label }}" class="form-label">Alias na prihlasenie</label>
+            <input type="text" id="{{ form.username.id_for_label }}" class="form-control" name="{{ form.username.html_name }}">
+        </div>
+
+        <div class="mb-3">
+            <label for="{{ form.password.id_for_label }}" class="form-label">Heslo</label>
+            <input type="password" id="{{ form.password.id_for_label }}" class="form-control" name="{{ form.password.html_name }}">
+        </div>
+
+        <div class="mb-3">
+            <button type="submit" class="btn btn-primary w-100">Vstupit</button>
+        </div>
+
+        {% if form.errors %}
+            <div class="alert alert-danger" role="alert">
+              <h4 class="alert-heading">Nepodarilo sa prihlasit!</h4>
+                {% if form.non_field_errors %}
+                  <p>Vase prihlasovacie udaje nie su spravne</p>
+                {% endif %}
+              <hr>
+                <p class="mb-0">
+                    Ak ste heslo zabudli mozete si ho zmenit.
+                    <a href="{% url 'password_reset' %}">Zabudnute heslo</a>
+                </p>
+            </div>
+
+        {% endif %}
+
+        </form>
+    </div>
+</div>
+
+{% endblock %}

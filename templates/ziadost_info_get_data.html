@@ -1,0 +1,65 @@
+{% extends 'index.html' %}
+{% load crispy_forms_filters %}
+{% block title %}Ziadost o povolenie informacii{% endblock %}
+{% block content %}
+<div class="mt-5 container">
+    <h1>Žiadosť o povolenie informacii</h1>
+    <div class="row mb-4">
+        <div class="col-md-5 mx-auto btn btn-primary mt-3">
+            Stiahnuť žiadosť v PDF formáte
+        </div>
+        <div class="col-md-5 mx-auto btn btn-success mt-3">
+            Vyriesit online
+        </div>
+    </div>
+    <h3 class="mb-3">Doplnenie údajov do žiadosti</h3>
+    <form method="post">
+    {% csrf_token %}
+        <div class="mb-3">
+            <label for="{{ form.client_name.id_for_label }}" class="form-label">Povinná osoba, ktorej je žiadosť určená:</label>
+            <input type="text" id="{{ form.client_name.id_for_label }}" class="form-control" name="{{ form.client_name.html_name }}">
+        </div>
+
+        <div class="mb-3">
+            <label for="{{ form.client_address.id_for_label }}" class="form-label">Adresa povinnej osoby:</label>
+            <input type="text" id="{{ form.client_address.id_for_label }}" class="form-control" name="{{ form.client_address.html_name }}">
+        </div>
+
+        <div class="mb-3">
+            <label for="{{ form.sender_name.id_for_label }}" class="form-label">Meno a priezvisko, názov alebo obchodné meno žiadateľa:</label>
+            <input type="text" id="{{ form.sender_name.id_for_label }}" class="form-control" name="{{ form.sender_name.html_name }}">
+        </div>
+
+        <div class="mb-3">
+            <label for="{{ form.sender_address.id_for_label }}" class="form-label">Adresa pobytu alebo sídlo žiadateľa:</label>
+            <input type="text" id="{{ form.sender_address.id_for_label }}" class="form-control" name="{{ form.sender_address.html_name }}">
+        </div>
+
+        <div class="mb-3">
+            <label for="{{ form.way.id_for_label }}" class="form-label">Požadovaný spôsob sprístupnenia informácií:</label>
+            <input type="text" id="{{ form.way.id_for_label }}" class="form-control" name="{{ form.way.html_name }}">
+        </div>
+
+        <div class="mb-3">
+            <label for="{{ form.info.id_for_label }}" class="form-label">Požadované informácie:</label>
+            <input type="text" id="{{ form.info.id_for_label }}" class="form-control" name="{{ form.info.html_name }}">
+        </div>
+
+        <div class="mb-3">
+            <label for="{{ form.date.id_for_label }}" class="form-label">Dátum:</label>
+            <input type="text" id="{{ form.date.id_for_label }}" class="form-control datepicker" name="{{ form.date.html_name }}">
+        </div>
+        <button type="submit" class="btn btn-primary mt-3 mb-3">Stiahnuť na podpis</button>
+    </form>
+
+</div>
+
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="http://code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
+<script>
+$(document).ready(function() {
+    $('.datepicker').datepicker();
+});
+</script>
+{% endblock %}

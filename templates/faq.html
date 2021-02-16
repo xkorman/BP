@@ -1,0 +1,31 @@
+{% extends 'index.html' %}
+{% block title %}FAQ - Najcastejsie otazky{% endblock %}
+
+{% block content %}
+    <div class="container mt-5">
+    {% if not questions %}
+        <h1>Ziadne najcastejsie otazky</h1>
+    {% else %}
+        <h1>Najcastejsie otazky</h1>
+         <div class="accordion" id="accordionExample">
+        {% for question in questions %}
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="headingOne">
+              <button class="accordion-button {% if not forloop.first %}collapsed {% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ question.id }}" aria-expanded="true" aria-controls="collapseOne">
+                  <strong>{{ question.question }}</strong>
+              </button>
+            </h2>
+            <div id="collapse{{ question.id }}" class="accordion-collapse collapse {% if forloop.first %}show{% endif %}" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+              <div class="accordion-body">
+                {{ question.answer }}
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+        </div>
+    {% endif %}
+
+    </div>
+
+
+{% endblock %}
