@@ -1,0 +1,127 @@
+{% extends 'index.html' %}
+{% load crispy_forms_filters %}
+{% block title %}Registracia{% endblock %}
+{% block content %}
+<div class="row mt-5 container mx-auto">
+    <div class="mx-auto">
+        <h2>Registracia</h2>
+        <form method="post" class="form">
+            {% csrf_token %}
+        <div class="row">
+            <div class="col-xl-6 mb-3">
+                <label for="{{ form.username.id_for_label }}" class="form-label">Alias na prihlasenie</label>
+                <input type="text" id="{{ form.username.id_for_label }}" class="form-control"
+                       name="{{ form.username.html_name }}"
+                       value="{% if form.username.value is not None %}{{ form.username.value }}{% endif %}">
+            </div>
+            <div class="col-xl-6 row">
+                <div class="col">
+                    <label for="{{ form.date_of_birth.id_for_label }}" class="form-label">Dátum narodenia</label>
+                    <input type="date" id="{{ form.date_of_birth.id_for_label }}" class="form-control datepicker"
+                           name="{{ form.date_of_birth.html_name }}"
+                           value="{% if form.date_of_birth.value is not None %}{{ form.date_of_birth.value }}{% endif %}">
+                </div>
+
+                <div class="col">
+                    <label for="{{ form.sex.id_for_label }}" class="form-label">Pohlavie</label></br>
+
+                    {% for choice in form.sex.field.choices %}
+
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" name="{{ form.sex.html_name }}" id="inlineRadio1{{ choice.1 }}" value="{{ choice.0 }}">
+                          <label class="form-check-label" for="inlineRadio1{{ choice.1 }}">{{ choice.1 }}</label>
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xl-6 mb-3">
+                <label for="{{ form.first_name.id_for_label }}" class="form-label">Meno</label>
+                <input type="text" id="{{ form.first_name.id_for_label }}" class="form-control"
+                       name="{{ form.first_name.html_name }}"
+                       value="{% if form.first_name.value is not None %}{{ form.first_name.value }}{% endif %}">
+            </div>
+            <div class="col-xl-6 mb-3">
+                <label for="{{ form.last_name.id_for_label }}" class="form-label">Priezvisko</label>
+                <input type="text" id="{{ form.last_name.id_for_label }}" class="form-control"
+                       name="{{ form.last_name.html_name }}"
+                       value="{% if form.last_name.value is not None %}{{ form.last_name.value }}{% endif %}">
+            </div>
+        </div>
+
+
+        <div class="mb-3">
+            <label for="{{ form.email.id_for_label }}" class="form-label">Email</label>
+            <input type="email" id="{{ form.email.id_for_label }}" class="form-control"
+                   name="{{ form.email.html_name }}"
+                   value="{% if form.email.value is not None %}{{ form.email.value }}{% endif %}">
+        </div>
+
+        <div class="row">
+            <div class="mb-3 col">
+                <label for="{{ form.password1.id_for_label }}" class="form-label">Heslo</label>
+                <input type="password" id="{{ form.password1.id_for_label }}" class="form-control" name="{{ form.password1.html_name }}">
+            </div>
+            <div class="mb-3 col">
+                <label for="{{ form.password2.id_for_label }}" class="form-label">Zopakuj heslo</label>
+                <input type="password" id="{{ form.password2.id_for_label }}" class="form-control" name="{{ form.password2.html_name }}">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="mb-3 col">
+                <label for="{{ form.city.id_for_label }}" class="form-label">Obec</label>
+                <select class="form-select" aria-label="Obec sem" name="{{ form.city.html_name }}">
+                    {% for choiceid, choicename in form.fields.city.choices %}
+                        <option value="{{ choiceid }}" {% if form.city is not None and choiceid == form.city.value|add:"0" %}selected="selected"{% endif %}>{{ choicename }}</option>
+                    {% endfor %}
+                </select>
+{#                <input type="password" id="{{ form.city.id_for_label }}" class="form-control" name="{{ form.city.html_name }}">#}
+            </div>
+            <div class="mb-3 col">
+                <label for="{{ form.street.id_for_label }}" class="form-label">Ulica</label>
+                <input type="text" id="{{ form.street.id_for_label }}" class="form-control"
+                       name="{{ form.street.html_name }}"
+                       value="{% if form.street.value is not None %}{{ form.street.value }}{% endif %}">
+            </div>
+        </div>
+        <div class="mb-3">
+                 </div>
+        <div class="mb-3">
+            <button type="submit" class="btn btn-primary w-100">Registrovat</button>
+        </div>
+
+        {% if form.errors %}
+            <div class="alert alert-danger" role="alert">
+              <h4 class="alert-heading">Nepodarilo sa registrovat!</h4>
+            {{ form.errors }}
+                {% if form.non_field_errors %}
+                  <p>Vase prihlasovacie udaje nie su spravne</p>
+                {% endif %}
+              <hr>
+                <p class="mb-0">
+                    Ak ste heslo zabudli mozete si ho zmenit.
+                    <a href="{% url 'password_reset' %}">Zabudnute heslo</a>
+                </p>
+            </div>
+
+        {% endif %}
+
+        </form>
+    </div>
+</div>
+
+
+    {#<link rel="stylesheet" href="http://code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">#}
+    {#<script src="http://code.jquery.com/jquery-1.9.1.js"></script>#}
+    {#<script src="http://code.jquery.com/ui/1.11.0/jquery-ui.js"></script>#}
+    {#<script>#}
+    {#$(document).ready(function() {#}
+    {#    $('.datepicker').datepicker({ dateFormat: 'yy-mm-dd' });#}
+    {#});#}
+    {#</script>#}
+{% endblock %}

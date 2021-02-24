@@ -27,12 +27,15 @@
                 {% block content %}
                 {% if user.is_authenticated %}
                     <li class="ms-lg-3">
-                        <a class="nav-link" href="{% url 'admin:index' %}">{{ user.username }}</a>
+                        <a class="nav-link" href="{% url 'profile' %}">{{ user.username }}</a>
                     </li>
                     <li>
                         <a class="nav-link" href="{% url 'logout' %}">Odhlasit sa</a>
                     </li>
                 {% else %}
+                    <li>
+                        <a class="nav-link" href="{% url 'register' %}">Registrovat sa</a>
+                    </li>
                     <li>
                         <a class="nav-link" href="{% url 'login' %}">Prihlasit sa</a>
                     </li>

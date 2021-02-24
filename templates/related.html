@@ -1,0 +1,10 @@
+{% extends 'profile.html' %}
+{% block title %}Profil - pribuzny{% endblock %}
+{% block profile_content %}
+    {% if not related %}
+        <h3>Momentalne nemate informacie o ziadnom pribuznom!</h3>
+        <a href="{% url 'ziadost_info' %}">Poziadat o informacie o mojom pribuznom</a>
+    {% else %}
+        <h3>Tu sa zobrazia vysledky</h3>
+    {% endif %}
+{% endblock %}

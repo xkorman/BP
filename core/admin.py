@@ -9,13 +9,13 @@ class MyUserAdmin(UserAdmin):
     search_fields = ('username',)
     ordering = ('username',)
     add_fieldsets = UserAdmin.add_fieldsets + (
-        (None, {'fields': ('is_active',)}),
+        (None, {'fields': ('is_active', )}),
         ('Permissions', {'fields': ('is_staff',)}),
-        ('User info', {'fields': ('first_name', 'last_name', 'email')})
+        ('User info', {'fields': ('first_name', 'last_name', 'email', 'sex', 'city', 'street', 'date_of_birth')})
     )
-    # fieldsets = UserAdmin.fieldsets + (
-    #     ('Roles', {'fields': ('is_editor',)}),
-    # )
+    fieldsets = UserAdmin.fieldsets + (
+        ('User info', {'fields': ('sex', 'city', 'street', 'date_of_birth')}),
+    )
 
 
 class QuestionAdmin(admin.ModelAdmin):
