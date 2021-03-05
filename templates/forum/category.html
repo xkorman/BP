@@ -1,0 +1,52 @@
+{% extends 'index.html' %}
+{% block title %}Fórum{% endblock %}
+{% block content %}
+    <div class="container mt-3">
+
+        <div>
+            <h1 class="col-md-4 col-12">Fórum</h1>
+        </div>
+        <div class="col-md col-12 d-flex justify-content-sm-between">
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb mb-0 mt-2">
+                <li class="breadcrumb-item"><a href="{% url 'forum_view' %}">Domov</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ category.title }}</li>
+              </ol>
+            </nav>
+            <button class="btn btn-success">Vytvorit novy prispevok</button>
+        </div>
+        <div class="d-block float-start w-100 mt-3">
+            <div class="">
+                <h5 class="bg-dark text-white p-3">{{ category.title }}</h5>
+            {% if result %}
+                {% for post in result %}
+                    <a href="{% url 'post_view' post.post.id %}" class="text-decoration-none text-dark">
+                    <div class="px-3 bg-light d-flex">
+                        <div class="flex-grow-1">
+                            <h6>{{ post.post.title }}</h6>
+                            {% if post.comment %}
+                                <p class="ms-2 small">{{ post.comment.forum_comment.edited_at }} | Posledny prispevok od:
+                                    <b>{{ post.comment.forum_comment.creator.first_name }}
+                                    {{ post.comment.forum_comment.creator.last_name }}
+                                    </b>&emsp;
+                                </p>
+                            {% else %}
+                                <p class="ms-2 small">Zatial ziadna odpoved</p>
+                            {% endif %}
+                        </div>
+                        <div class="small">
+                            <p class="mb-0 text-right">{{ post.post.creator.username }} | {{ post.post.creator.first_name }}
+                                {{ post.post.creator.last_name }}
+                            </p>
+                            <p class="mb-0 text-end">{{ post.post.created_at }}</p>
+                        </div>
+                    </div>
+                    </a>
+                {% endfor %}
+            {% else %}
+                <div class="px-3 bg-light py-2">Zatial ziadne prispevky</div>
+            {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends 'index.html' %}
+{% block title %}Zoznam ústavov{% endblock %}
+{% block content %}
+    <div class="container mt-3">
+        <h1>Zoznam ústavov</h1>
+    <div class="row justify-content-between">
+        {% for department in data %}
+        <div class="card border-0 my-3 mx-auto col-xl-6 col-md-6 col-12 ">
+          <div class="card-body shadow px-4 py-4">
+            <h4 class="card-title">{{ department.name }}</h4>
+            <h6 class="card-subtitle mb-2 text-muted">{{ department.type }}</h6>
+            <p class="card-text"><b>Adresa:</b><br/>{{ department.address }}</p>
+              <span>
+                  Email: <a href="mailto:{{ department.email }}" class="link-dark">{{ department.email }}</a>
+              </span><br/>
+              <span>
+                  Telefón: <a href="" class="link-dark">{{ department.tel }}</a>
+              </span><br/>
+              <span>
+                  Web: <a href="{{ department.web }}" class="card-link">Webová stránka</a>
+              </span>
+          </div>
+        </div>
+    {% endfor %}
+    </div>
+    </div>
+
+{% endblock %}

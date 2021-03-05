@@ -5,6 +5,7 @@
 {% block content %}
 <div class="mt-5 container">
     <h1>Žiadosť o povolenie informacii</h1>
+<p>popis ziadosti</p>
     <div class="row mb-4">
         <form method="get" action="{% static 'docs/ziadost_info.pdf' %}" class="mx-auto col-md-5  mt-3">
            <button type="submit" class="w-100 btn btn-primary">Stiahnuť žiadosť v PDF formáte</button>
@@ -66,12 +67,4 @@
 
 </div>
 
-{#    <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">#}
-{#<script src="http://code.jquery.com/jquery-1.9.1.js"></script>#}
-{#<script src="http://code.jquery.com/ui/1.11.0/jquery-ui.js"></script>#}
-{#<script>#}
-{#$(document).ready(function() {#}
-{#    $('.datepicker').datepicker();#}
-{#});#}
-{#</script>#}
 {% endblock %}

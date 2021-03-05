@@ -1,0 +1,39 @@
+{% extends 'index.html' %}
+{% block title %}Nova sprava{% endblock %}
+{% block content %}
+    {% csrf_token %}
+    <div class="container mt-3">
+        <h1>Nová správa</h1>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="col-xl-5 col-sm-8">
+                <select name="user_select" id="selector_name" class="form-select form-select-lg mb-3"></select>
+            </div>
+            <div class="mb-3">
+                <textarea class="form-control mt-3" name="{{ form.text.html_name }}" id="{{ form.text.id_for_label }}" rows="3"></textarea>
+            </div>
+            <div class="mb-3">
+                <button type="submit" class="btn btn-primary w-100">Odoslať</button>
+            </div>
+            {% if form.errors %}
+            <div class="alert alert-danger" role="alert">
+              <h4 class="alert-heading">Nepodarilo sa registrovat!</h4>
+            {{ form.errors }}
+                {% if form.non_field_errors %}
+                  <p>Vase prihlasovacie udaje nie su spravne</p>
+                {% endif %}
+              <hr>
+                <p class="mb-0">
+                    Ak ste heslo zabudli mozete si ho zmenit.
+                    <a href="{% url 'password_reset' %}">Zabudnute heslo</a>
+                </p>
+            </div>
+
+        {% endif %}
+        </form>
+    </div>
+
+
+
+{% endblock %}

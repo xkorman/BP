@@ -18,6 +18,9 @@
                   <li class="nav-item">
                     <a class="nav-link" href="#">Zmena údajov</a>
                   </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'messages_page' %}">Spravy</a>
+                  </li>
                     {% if user.is_superuser %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'admin:index' %}">Admin sekcia</a>
@@ -27,31 +30,43 @@
             </div>
             <div class="col-md-9 bg-light py-3">
                 {% block profile_content %}
-                <h4>Meno priezvisko</h4>
-                <span>ID: #12345</span>
-                <h4 class="mt-3">Vaznica Leopoldovska</h4>
-                <img class="img-fluid mb-3" src="{% static 'img/map.png'%}"/>
-                <div class="row">
-                    <div class="col-md-6">
-                        <h6>Adresa:</h6>
-                        <span>
-                            Ulica c.243<br/>
-                            Obec Nazov, 012 34
-                        </span>
-                    </div>
-                    <div class="col-md-6">
-                        <h6>Kontakt:</h6>
-                        <span>
-                            <a href="tel:0912345678"></a>0912345678<br/>
-                            <a href="mailto:mail@mail.com">mail@mail.com</a>
-                        </span>
-                    </div>
-                </div>
-                <div class="mx-auto mt-2 row">
-                    <div class="col-md-3 mt-2 mx-auto btn btn-primary">Button1</div>
-                    <div class="col-md-3 mt-2 mx-auto btn btn-primary">Button2</div>
-                    <div class="col-md-3 mt-2 mx-auto btn btn-primary">Button3</div>
-                </div>
+                    {% if not list_of_prisoners %}
+                        <h4>Momentalne nemate priradeneho ziadneho pribuzneho vazna.</h4>
+                    {% else %}
+                        {% for prisoner_data in list_of_prisoners %}
+                            <div class="mb-3">
+                            <h4>{{ prisoner_data.prisoner.1.first_name }} {{ prisoner_data.prisoner.1.last_name }}</h4>
+                            <span>ID: #{{ prisoner_data.prisoner.1.prisoner_num }}</span>
+                            <h4 class="mt-3">{{ prisoner_data.departments.name }}</h4>
+                            <h6>{{ prisoner_data.departments.type }}</h6>
+                            <img class="img-fluid mb-3" src="{% static 'img/map.png'%}"/>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Adresa:</h6>
+                                    <span>
+                                        {{ prisoner_data.departments.address }}
+{#                                        Ulica c.243<br/>#}
+{#                                        Obec Nazov, 012 34#}
+                                    </span>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6>Kontakt:</h6>
+                                    <span>
+                                        telefón: <a href="tel:{{ prisoner_data.departments.tel }}">{{ prisoner_data.departments.tel  }}</a><br/>
+                                        e-mail: <a href="mailto:{{ prisoner_data.departments.email  }}">{{ prisoner_data.departments.email }}</a>
+                                    </span>
+                                </div>
+                            </div>
+{#                            <div class="mx-auto mt-2 row">#}
+{#                                <div class="col-md-3 mt-2 mx-auto btn btn-primary">Button1</div>#}
+{#                                <div class="col-md-3 mt-2 mx-auto btn btn-primary">Button2</div>#}
+{#                                <div class="col-md-3 mt-2 mx-auto btn btn-primary">Button3</div>#}
+{#                            </div>#}
+                            <hr>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
             {% endblock %}
             </div>
         </div>

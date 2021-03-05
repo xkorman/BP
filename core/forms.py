@@ -5,6 +5,7 @@ from functools import partial
 
 from django.contrib.auth.forms import UserCreationForm
 from django.forms import Select
+from django_quill.forms import QuillFormField
 
 from Test_BP import settings
 from core.models import User, Cities
@@ -40,3 +41,14 @@ class SignUpForm(UserCreationForm):
         model = User
         fields = ('username', 'first_name', 'last_name', 'email', 'password1', 'password2', 'sex', 'city', 'street',
                   'date_of_birth')
+
+
+class MessagesForm(forms.Form):
+    text = forms.CharField(widget=forms.Textarea, required=True)
+
+
+class ForumPostForm(forms.Form):
+    text = QuillFormField()
+
+    class Media:
+        js = ('js/forum_post.js',)

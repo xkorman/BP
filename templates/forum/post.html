@@ -1,0 +1,173 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block title %}Fórum{% endblock %}
+{% include 'django_quill/media.html' %}
+{% block content %}
+    <div class="container my-3">
+
+        <div>
+            <h1 class="col-md-4 col-12">Fórum</h1>
+        </div>
+        <div class="col-md col-12 d-flex justify-content-sm-between">
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb mb-0 mt-2">
+                <li class="breadcrumb-item"><a href="{% url 'forum_view' %}">Domov</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'category_view' post.category.id %}">{{ post.category.title }}</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ post.title }}</li>
+              </ol>
+            </nav>
+        </div>
+        <div class="d-block float-start w-100 mt-3">
+            <div>
+                <h5 class="bg-dark text-white p-3">{{ post.title }}</h5>
+                    {% if comments.number == 1 %}
+                    <div class="container-fluid shadow-sm">
+                        <div class="row">
+                        <div class="col-lg-3 col-xl-2 col-md-12 border-md-end bg-light border-bottom">
+                            <div class="d-sm-flex d-lg-block  py-2 px-3">
+                                <div class="me-auto">
+                                    <h6 class="text-lg-center mb-0">{{ post.creator.first_name }} {{ post.creator.last_name }}</h6>
+                                    <p class="text-lg-center mb-0">{{ post.creator.username }}</p>
+                                </div>
+                                <div class="text-sm-end text-lg-start">
+                                {% if post.created_at != post.edited_at %}
+                                    <p class="small px-2 mb-0">Pridane: {{ post.created_at }}</p>
+                                    <p class="small px-2 mb-0">Editovane: {{ post.edited_at }}</p>
+                                    <p class="small px-2 mb-0"></p>
+                                {% else %}
+                                    <p class="small px-2">Pridane:<br/>{{ post.created_at }}</p>
+                                {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-9 col-xl-10 col-md-12 bg-light border-bottom border-start">
+                            <div class="px-3 pt-2">
+                                {{ post.text.html|safe }}
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                {% endif %}
+
+                {% for comment in comments %}
+                    <div class="container-fluid shadow mt-5 border-danger border-3">
+                        <div class="row">
+                        <div class="col-lg-3 col-xl-2 col-md-12 border-md-end py-3 border-bottom">
+                            <div class="d-sm-flex d-lg-block py-2 px-3">
+                                <div class="me-auto">
+                                    <h6 class="text-lg-center mb-0">{{ comment.forum_comment.creator.first_name }} {{ comment.forum_comment.creator.last_name }}</h6>
+                                    <p class="text-lg-center mb-0">{{ comment.forum_comment.creator.username }}</p>
+                                </div>
+                                <div class="text-sm-end text-lg-start">
+                                {% if comment.forum_comment.created_at|date:"d-m-Y H:M" != comment.forum_comment.edited_at|date:"d-m-Y H:M" %}
+                                    <p class="small px-2 mb-0">Pridane: {{ comment.forum_comment.created_at }}</p>
+                                    <p class="small px-2 mb-0">Editovane: {{ comment.forum_comment.edited_at }}</p>
+                                    <p class="small px-2 mb-0"></p>
+                                {% else %}
+                                    <p class="small px-2">Pridane:<br/>{{ comment.forum_comment.created_at }}</p>
+                                {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-9 col-xl-10 col-md-12 border-bottom border-start py-2">
+                                {% if comment.forum_comment.creator.id == user.id %}
+                                    <div class="d-block mt-2">
+                                        <button id="edit-{{ comment.forum_comment.id }}" class="btn btn-sm btn-warning float-end">Upravit</button>
+                                        <button type="button" id="delete-{{ comment.forum_comment.id }}" onclick="openModal(this)"
+                                                class="btn btn-sm btn-danger float-end mx-3" >Vymazat</button>
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content ">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Vymazanie prispevku</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Ste si istý, že chcete vymazať tento príspevok?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Nie, nechcem vymazať príspevok</button>
+        <button type="button" class="btn btn-danger" onclick="deleteIt(this)" id="yesButton">Áno, vymazať</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+                                    </div>
+                                {% endif %}
+                            <div class="px-3 pt-2">
+                                {{ comment.forum_comment.text.html|safe }}
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                {% endfor %}
+
+            <nav aria-label="Page navigation example" class="mt-3">
+              <ul class="pagination justify-content-center">
+                  {% if comments.has_previous %}
+                      <li class="page-item">
+                          <a class="page-link" href="?page=1" tabindex="-1">Prvá</a>
+                      </li>
+                      <li class="page-item">
+                        <a class="page-link" href="?page={{ comments.previous_page_number }}" tabindex="-1">Predchadzajuca</a>
+                      </li>
+                  {% else %}
+                      <li class="page-item disabled">
+                        <a class="page-link" tabindex="-1" aria-disabled="true">Predchádzajúca</a>
+                      </li>
+
+                  {% endif %}
+
+                    <li class="page-item disabled"><a class="page-link">{{ comments.number }}</a></li>
+
+                {% if comments.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ comments.next_page_number }}">Ďalšia</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ comments.paginator.num_pages }}">Posledná</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled">
+                        <a class="page-link" tabindex="-1" aria-disabled="true">Ďalšia</a>
+                    </li>
+                {% endif %}
+              </ul>
+            </nav>
+
+
+            <div class="mt-3">
+                <h5 class="bg-dark text-white p-3">Odpovedat</h5>
+                <form method="post" id="FormComment">
+                    {% csrf_token %}
+                    <input name="text" type="hidden" value="">
+                    <div class="editor mt-3 django-quill-widget-container" id="editor">
+                        <div class="ql-snow">
+                        </div>
+                    </div>
+                    <button type="submit" class="mt-3 mb-3 float-end button btn btn-success">Odoslat odpoved</button>
+                    {% if form.errors %}
+                        <div class="alert-danger">
+                            {{ form.errors }}
+                        </div>
+                    {% endif %}
+                </form>
+
+            </div>
+
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block scripts %}
+    {{ block.super }}
+    <script src="{% static 'js/forum_delete.js' %}"></script>
+{% endblock %}

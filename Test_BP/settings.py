@@ -9,7 +9,8 @@ https://docs.djangoproject.com/en/3.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
-
+import locale
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -39,6 +40,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'core',
     'crispy_forms',
+    'django_quill',
+    # 'channels',
+    # 'django_private_chat',
 ]
 
 MIDDLEWARE = [
@@ -126,6 +130,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+# STATICFILES_DIRS = (
+#     os.path.join(BASE_DIR, 'static'),
+# )
 
 # STATICFILES_DIRS = [
 #     BASE_DIR / "static",
@@ -137,3 +146,13 @@ LOGIN_REDIRECT_URL = '/'
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 AUTH_USER_MODEL = 'core.User'
+
+# # CHAT
+# CHAT_WS_SERVER_HOST = 'localhost'
+# CHAT_WS_SERVER_PORT = 8000
+# CHAT_WS_SERVER_PROTOCOL = 'ws'
+#
+# ASGI_APPLICATION = "Test_BP.asgi.application"
+
+
+locale.setlocale(locale.LC_ALL, 'sk_SK.UTF-8')

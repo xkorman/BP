@@ -1,0 +1,76 @@
+{% extends 'index.html' %}
+{% block title %}Sukromne spravy{% endblock %}
+{% block content %}
+    <div class="container mt-3">
+        <h1>Súkromné správy</h1>
+        <div class="row mt-3">
+            <div class="col-xl-4">
+                <a href="{% url 'new_message' %}" class="text-decoration-none">
+                    <div class="button btn-success p-3 mb-3">
+                        <span class="h5">Napísať novú správu</span>
+                    </div>
+                </a>
+
+                {% for message in messages %}
+                    {% if message.sender.id != user.id %}
+                        {% if message.viewed %}
+                            <a href="{% url 'messages' message.sender.id %}" class="text-decoration-none msg">
+                                <div class="alert-secondary border-5 border-bottom p-3">
+                                    <div class="row">
+                                        <div class="col">
+                                            <h6>{{ message.sender.first_name }} {{ message.sender.last_name }}</h6>
+                                        </div>
+                                        <div class="col">
+                                            <span class="float-end small">{{ message.date }}</span>
+                                        </div>
+                                    </div>
+                                    <span>{{ message.sender.first_name }} {{ message.sender.last_name }}: {{ message.text|truncatechars:50 }}</span>
+                                </div>
+                            </a>
+                        {% else %}
+                            <a href="{% url 'messages' message.sender.id %}" class="text-decoration-none msg">
+                                <div class="alert-primary border-5 border-bottom p-3">
+                                    <div class="row">
+                                        <div class="col">
+                                            <h6>{{ message.sender.first_name }} {{ message.sender.last_name }}</h6>
+                                        </div>
+                                        <div class="col">
+                                            <span class="float-end small">{{ message.date }}</span>
+                                        </div>
+                                    </div>
+                                    <span>{{ message.sender.first_name }} {{ message.sender.last_name }}: {{ message.text|truncatechars:50 }}</span>
+                                </div>
+                            </a>
+                        {% endif %}
+                    {% else %}
+                        <a href="{% url 'messages' message.receiver.id %}" class="text-decoration-none msg">
+                            <div class="alert-secondary border-white border-bottom border-1 p-3">
+                                <div class="row">
+                                    <div class="col">
+                                        <h6>{{ message.receiver.first_name }} {{ message.receiver.last_name }}
+                                            {% if message.viewed %}
+                                                <span class="text-success">&#10003;</span>
+                                            {% else %}
+                                                <span class="text-warning">&#x2A2F;</span>
+                                            {% endif %}
+                                        </h6>
+                                    </div>
+                                    <div class="col">
+                                        <span class="float-end small">{{ message.date }}</span>
+                                    </div>
+                                </div>
+                                <span>{{ message.sender.first_name }} {{ message.sender.last_name }}: {{ message.text|truncatechars:50 }}</span>
+                            </div>
+                        </a>
+                    {% endif %}
+                {% endfor %}
+
+            </div>
+
+            <div class="col-xl">
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

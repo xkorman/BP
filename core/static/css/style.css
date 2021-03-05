@@ -11,3 +11,14 @@
 .carousel-caption {
     text-shadow: 1px 1px 10px #1a1e21;
 }
+
+.msg:hover div {
+    background-color: #dedede;
+}
+
+.mirror {
+  -moz-transform:    scaleX(-1); /* Gecko */
+  -o-transform:      scaleX(-1); /* Opera */
+  -webkit-transform: scaleX(-1); /* Webkit */
+  transform:         scaleX(-1); /* Standard */
+}
