@@ -5,10 +5,16 @@
 {% block content %}
 <div class="mt-5 container">
     <h1>Žiadosť o povolenie informacii</h1>
-<p>popis ziadosti</p>
+        <p>Pokiaľ si žiadate byť informovaný o konkrétnej informácií, na ktorú máte nárok stačí vyplniť nižšie uvedenú
+            žiadosť. Žiadosť je možné vyplniť v elektronickej forme(formulár nižšie) a následne si stiahnuť predvyplnenú
+            kópiu alebo si stiahnuť prázdnu kópiu v
+            PDF formáte, ktorú je potrebné doručiť povinnej osobe. V príade, že ste prihlásený do aplikácie údaje sa
+            vám doplnia automaticky, podľa informácií, ktoré ste uviedli pri registrácií. Prihlásený používateľ taktiež
+            môže využiť možnosť poslania žiadosti online formou
+        </p>
     <div class="row mb-4">
         <form method="get" action="{% static 'docs/ziadost_info.pdf' %}" class="mx-auto col-md-5  mt-3">
-           <button type="submit" class="w-100 btn btn-primary">Stiahnuť žiadosť v PDF formáte</button>
+           <button type="submit" class="w-100 btn btn-primary">Stiahnuť prázdnu žiadosť v PDF formáte</button>
         </form>
         <form method="get" action="{% url 'ziadost_info_logged_in' %}" class="mx-auto col-md-5  mt-3">
            <button type="submit" class="w-100 btn btn-success">Vyriesit online</button>
@@ -27,14 +33,26 @@
             <input type="text" id="{{ form.client_address.id_for_label }}" class="form-control" name="{{ form.client_address.html_name }}">
         </div>
 
+{#        {% if prisoners %}#}
+{#            <div class="my-3">#}
+{#                <small class="form-text text-muted">Vyberte príbuzného, ktorého chcete doplniť do formulára.</small>#}
+{#                <br/>#}
+{#                {% for prisoner in prisoners %}#}
+{#                    <button id="{{ prisoner.id }}" type="button" onclick="fillIt(this.id)" class="btn-sm btn btn-secondary me-2">{{ prisoner.first_name }} {{ prisoner.last_name }}</button>#}
+{#                {% endfor %}#}
+{#            </div>#}
+{#        {% endif %}#}
+
         <div class="mb-3">
             <label for="{{ form.sender_name.id_for_label }}" class="form-label">Meno a priezvisko, názov alebo obchodné meno žiadateľa:</label>
-            <input type="text" id="{{ form.sender_name.id_for_label }}" class="form-control" name="{{ form.sender_name.html_name }}">
+            <input type="text" id="{{ form.sender_name.id_for_label }}" class="form-control" name="{{ form.sender_name.html_name }}"
+            value="{{ form.client_name.value }}">
         </div>
 
         <div class="mb-3">
             <label for="{{ form.sender_address.id_for_label }}" class="form-label">Adresa pobytu alebo sídlo žiadateľa:</label>
-            <input type="text" id="{{ form.sender_address.id_for_label }}" class="form-control" name="{{ form.sender_address.html_name }}">
+            <input type="text" id="{{ form.sender_address.id_for_label }}" class="form-control" name="{{ form.sender_address.html_name }}"
+            value="{{ form.client_address.value }}">
         </div>
 
         <div class="mb-3">
@@ -44,15 +62,20 @@
 
         <div class="mb-3">
             <label for="{{ form.info.id_for_label }}" class="form-label">Požadované informácie:</label>
-            <input type="text" id="{{ form.info.id_for_label }}" class="form-control" name="{{ form.info.html_name }}">
+            <input type="text" id="{{ form.info.id_for_label }}" class="form-control" name="{{ form.info.html_name }}"
+            aria-describedby="info_help">
+            <small id="info_help" class="form-text text-muted">Zvyčajne obsahuje konkrétnosti, o ktorých žiadate byť
+            informovaný. Ak si nie ste istý, čo všetko by v žiadosti malo byť zahrnuté, skontrolujte, či sa odpoveď
+            nenachádza v časti <a href="{% url 'faq' %}">FAQ - najčastejšie otázky</a></small>
         </div>
 
         <div class="mb-3">
             <label for="{{ form.date.id_for_label }}" class="form-label">Dátum:</label>
             <input type="date" id="{{ form.date.id_for_label }}" class="form-control datepicker" name="{{ form.date.html_name }}">
         </div>
+    <div class="d-flex justify-content-end">
         <button type="submit" class="btn btn-primary mt-3 mb-3">Stiahnuť na podpis</button>
-
+    </div>
         {% if form.errors %}
             <div class="alert alert-danger" role="alert">
               <h4 class="alert-heading">Nepodarilo sa doplnit ziadost!</h4>

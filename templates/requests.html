@@ -1,5 +1,33 @@
 {% extends 'profile.html' %}
 {% block title %}Profil - ziadosti{% endblock %}
 {% block profile_content %}
-    Tabulka ziadosti
+    <h1>Tabulka ziadosti</h1>
+    <table class="table table-hover">
+        <thead>
+            <td>ID#</td>
+            <td>Typ</td>
+            <td>Vazen</td>
+            <td>Datum</td>
+            <td>Stav</td>
+        </thead>
+    {% for request in requests %}
+        <tr class="table-{% if request.state == 'P' %}secondary{% elif request.state == 'R'%}primary
+                        {% elif request.state == 'S'%}success{% else %}danger{% endif %}" style="cursor: pointer"
+            onclick="window.location='{% url 'info_detail' request.id %}'">
+            <td>#{{ request.id }}</td>
+            {% if request.type == 'N' %}
+                <td class="">Žiadosť o návštevu</td>
+            {% elif request.type == 'V' %}
+                <td class="">Žiadosť o videohovor</td>
+            {% else %}
+                <td class="">Žiadosť o telefonát</td>
+            {% endif %}
+            <td>{{ request.prisoner }}</td>
+            <td>{{ request.edited_at }}</td>
+            <td>{% if request.state == 'P' %}Poslaná{% elif request.state == 'R'%}Rieši sa{% elif request.state == 'S' %}
+                Schválená{% else %}Zamietnutá{% endif %}</td>
+        </tr>
+    {% endfor %}
+
+    </table>
 {% endblock %}

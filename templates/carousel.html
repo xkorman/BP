@@ -1,45 +1,33 @@
 {% load static %}
+
 <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
   <ol class="carousel-indicators">
-    <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active"></li>
-    <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1"></li>
-    <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2"></li>
+      {% for new in news %}
+          <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="{{ forloop.counter0 }}"
+              {% if forloop.first %}class="active"{% endif %}></li>
+      {% endfor %}
   </ol>
   <div class="carousel-inner">
-    <div class="carousel-item active">
-      <div class="container-t">
-        <img src="{% static 'img/carousel1.jpeg' %}" class="d-block w-100 img-fluid" alt="...">
-        <div class="carousel-caption d-none d-md-block">
-          <h5>Dôležitá správa č. 1</h5>
-          <p>Tuto bude jej stručný opis ....</p>
+      {% for new in news %}
+        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+          <div class="container-t">
+            <img src="{% get_media_prefix %}{{ new.img }}" class="d-block w-100 img-fluid" alt="{{ new.title }}">
+            <div class="carousel-caption d-none d-md-block">
+              <h5>{{ new.title }}</h5>
+              <p>{{ new.text|safe }}</p>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-    <div class="carousel-item">
-      <div class="container-t">
-        <img src="{% static 'img/carousel2.jpg' %}" class="d-block w-100" alt="...">
-        <div class="carousel-caption d-none d-md-block">
-          <h5>Dôležitá správa č. 2</h5>
-          <p>Tuto bude jej stručný opis ....</p>
-        </div>
-      </div>
-    </div>
-    <div class="carousel-item">
-      <div class="container-t">
-        <img src="{% static 'img/carousel3.jpg' %}" class="d-block w-100" alt="...">
-        <div class="carousel-caption d-none d-md-block">
-          <h5>Dôležitá správa č. 3</h5>
-          <p>Tuto bude jej stručný opis ....</p>
-        </div>
-      </div>
-    </div>
+      {% endfor %}
+
+
   </div>
   <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-bs-slide="prev">
     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Previous</span>
+    <span class="visually-hidden">Predchádzajúca</span>
   </a>
   <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-bs-slide="next">
     <span class="carousel-control-next-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Next</span>
+    <span class="visually-hidden">Ďalšia</span>
   </a>
 </div>

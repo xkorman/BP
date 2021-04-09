@@ -10,7 +10,7 @@
                 <hr>
                 <ul class="nav flex-column">
                   <li class="nav-item">
-                    <a class="nav-link" href="{% url 'related' %}">Príbuzný</a>
+                    <a class="nav-link" href="{% url 'profile' %}">Príbuzný</a>
                   </li>
                   <li class="nav-item">
                     <a class="nav-link" href="{% url 'requests' %}">Žiadosti</a>
@@ -21,7 +21,7 @@
                   <li class="nav-item">
                     <a class="nav-link" href="{% url 'messages_page' %}">Spravy</a>
                   </li>
-                    {% if user.is_superuser %}
+                    {% if user.is_staff %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'admin:index' %}">Admin sekcia</a>
                     </li>
@@ -35,28 +35,39 @@
                     {% else %}
                         {% for prisoner_data in list_of_prisoners %}
                             <div class="mb-3">
-                            <h4>{{ prisoner_data.prisoner.1.first_name }} {{ prisoner_data.prisoner.1.last_name }}</h4>
-                            <span>ID: #{{ prisoner_data.prisoner.1.prisoner_num }}</span>
-                            <h4 class="mt-3">{{ prisoner_data.departments.name }}</h4>
-                            <h6>{{ prisoner_data.departments.type }}</h6>
-                            <img class="img-fluid mb-3" src="{% static 'img/map.png'%}"/>
+                            <h4>{{ prisoner_data.1.first_name }} {{ prisoner_data.1.last_name }}</h4>
+                            <span>ID: #{{ prisoner_data.1.prisoner_num }}</span>
+                            <h4 class="mt-3">{{ prisoner_data.1.department.name }}</h4>
+                            <h6>{{ prisoner_data.1.department.type }}</h6>
+                                <div style="width: 100%">
+                                    <iframe src="https://www.freemap.sk/?map=15/{{ prisoner_data.1.department.lat }}/
+{{ prisoner_data.1.department.long }}&layers=X&point={{ prisoner_data.1.department.lat }}/{{ prisoner_data.1.department.long }}" style="width: 100%; height: 200px; border: 0"
+                                            allowfullscreen class="img-fluid"></iframe>
+                                </div>
+{#                            <img class="img-fluid mb-3" src="{% static 'img/map.png'%}"/>#}
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-6 mt-3">
                                     <h6>Adresa:</h6>
                                     <span>
-                                        {{ prisoner_data.departments.address }}
+                                        {{ prisoner_data.1.department.address }}
 {#                                        Ulica c.243<br/>#}
 {#                                        Obec Nazov, 012 34#}
                                     </span>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-6 mt-3">
                                     <h6>Kontakt:</h6>
                                     <span>
-                                        telefón: <a href="tel:{{ prisoner_data.departments.tel }}">{{ prisoner_data.departments.tel  }}</a><br/>
-                                        e-mail: <a href="mailto:{{ prisoner_data.departments.email  }}">{{ prisoner_data.departments.email }}</a>
+                                        telefón: <a href="tel:{{ prisoner_data.1.department.phone }}">{{ prisoner_data.1.department.phone  }}</a><br/>
+                                        e-mail: <a href="mailto:{{ prisoner_data.1.department.email  }}">{{ prisoner_data.1.department.email }}</a>
                                     </span>
                                 </div>
                             </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <p><b>IBAN:</b> {{ prisoner_data.1.department.iban }}</p>
+                                    </div>
+                                </div>
+
 {#                            <div class="mx-auto mt-2 row">#}
 {#                                <div class="col-md-3 mt-2 mx-auto btn btn-primary">Button1</div>#}
 {#                                <div class="col-md-3 mt-2 mx-auto btn btn-primary">Button2</div>#}

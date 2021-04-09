@@ -14,11 +14,19 @@
                   Email: <a href="mailto:{{ department.email }}" class="link-dark">{{ department.email }}</a>
               </span><br/>
               <span>
-                  Telefón: <a href="" class="link-dark">{{ department.tel }}</a>
+                  Telefón: <a href="tel:{{ department.phone }}" class="link-dark">{{ department.phone }}</a>
               </span><br/>
               <span>
-                  Web: <a href="{{ department.web }}" class="card-link">Webová stránka</a>
+                  Web: <a href="{{ department.web }}" class="card-link">{{ department.web }}</a>
               </span>
+              <div class="mt-3">
+                  <span>Bankové spojenie:<br/></span>
+                  <span>
+                      <b>IBAN:</b> {{ department.iban }}<br/>
+                      <b>Názov účtu ústavu:</b> {{ department.acc_name }}<br/>
+                      <b>Korešpondenčná adresa ústavu:</b> {{ department.acc_adr }}
+                  </span>
+              </div>
           </div>
         </div>
     {% endfor %}

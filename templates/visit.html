@@ -1,0 +1,76 @@
+{% extends 'index.html' %}
+{% load static %}
+{% load crispy_forms_filters %}
+{% block title %}Ziadost o návštevu väzňa{% endblock %}
+{% block content %}
+<div class="mt-5 container">
+
+{% if messages %}
+    <div class="messages alert alert-success alert-dismissible fade show" role="alert">
+        {% for message in messages %}
+            <span{% if message.tags %} class="alert-{{ message.tags }}"{% endif %}>
+                {{ message }}
+            </span>
+        {% endfor %}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+{% endif %}
+
+    <h1 class="mb-3">Žiadosť o návštevu, telefonát, videohovor</h1>
+    <div class="mb-3 g-3">
+{#    {% for prisoner in prisoners %}#}
+{#        <a class="me-2 btn {% if forloop.first %}btn-secondary disabled{% else %}btn-primary{% endif %}">{{ prisoner.prisoner_id.first_name }} {{ prisoner.prisoner_id.last_name }}</a>#}
+{#    {% endfor %}#}
+    </div>
+    {% if form %}
+    <form method="post" class="row g-3">
+        {% csrf_token %}
+        {{ form|crispy }}
+
+{#        <div class="col-lg-4">#}
+{#            <label for="{{ form.req_fname.id_for_label }}" class="form-label">Meno žiadateľa</label>#}
+{#            <input type="text" id="{{ form.req_fname.id_for_label }}" class="form-control"#}
+{#                   name="{{ form.req_fname.html_name }}" value="{{ form.req_fname.value  }}">#}
+{#        </div>#}
+{#        <div class="col-lg-4">#}
+{#            <label for="{{ form.req_lname.id_for_label }}" class="form-label">Priezvisko žiadateľa</label>#}
+{#            <input type="text" id="{{ form.req_lname.id_for_label }}" class="form-control"#}
+{#                   name="{{ form.req_lname.html_name }}" value="{{ form.req_lname.value  }}">#}
+{#        </div>#}
+{#        <div class="col-lg-4 mb-4">#}
+{#            <label for="{{ form.req_dob.id_for_label }}" class="form-label">Dátum narodenia žiadateľa</label>#}
+{#            <input type="date" id="{{ form.req_dob.id_for_label }}" class="form-control"#}
+{#                   name="{{ form.req_dob.html_name }}" value="{{ form.req_dob.value|date:"Y-m-d" }}">#}
+{#        </div>#}
+{#        <div class="col-lg-4">#}
+{#            <label for="{{ form.p_fname.id_for_label }}" class="form-label">Meno väzňa</label>#}
+{#            <input type="text" id="{{ form.p_fname.id_for_label }}" class="form-control" readonly#}
+{#                   name="{{ form.p_fname.html_name }}" value="{{ form.p_fname.value }}">#}
+{#        </div>#}
+{#        <div class="col-lg-4">#}
+{#            <label for="{{ form.p_lname.id_for_label }}" class="form-label">Priezvisko väzňa</label>#}
+{#            <input type="text" id="{{ form.p_lname.id_for_label }}" class="form-control" readonly#}
+{#                   name="{{ form.p_lname.html_name }}" value="{{ form.p_lname.value }}">#}
+{#        </div>#}
+{#        <div class="col-lg-4">#}
+{#            <label for="{{ form.p_num.id_for_label }}" class="form-label">Číslo väzňa</label>#}
+{#            <input type="text" id="{{ form.p_num.id_for_label }}" class="form-control" readonly#}
+{#                   name="{{ form.p_num.html_name }}" value="{{ form.p_num.value }}">#}
+{#        </div>#}
+{#        <div class="col-12">#}
+{#            <label for="{{ form.reason.id_for_label }}" class="form-label">Dovod navstevy</label>#}
+{#            <textarea type="textarea" id="{{ form.reason.id_for_label }}" class="form-control"#}
+{#                      name="{{ form.reason.html_name }}" rows="4"></textarea>#}
+{#        </div>#}
+        <div class="col-12">
+            <button class="col-12 btn btn-primary">Odoslat</button>
+        </div>
+    </form>
+    {% else %}
+        <h4>Momentalne nemate prideleneho ziadneho vazna - nemozete podat ziadost</h4>
+    {% endif %}
+</div>
+
+
+
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block title %}#{{ request.id }} {{ request.get_type_name }}{% endblock %}
+{% block content %}
+<div class="mt-5 container alert alert-{% if request.state == 'P' %}secondary{% elif request.state == 'R'%}primary
+                        {% elif request.state == 'S'%}success{% else %}danger{% endif %}">
+
+    <h1 class="mb-3">#{{ request.id }} {{ request.get_type_name }}</h1>
+    <div class="mb-3 row">
+        <div class="col-lg-2">
+            <span>Žiadateľ:</span>
+        </div>
+        <div class="col-lg-10">
+            <h6>{{ request.user.first_name }} {{ request.user.last_name }}</h6>
+        </div>
+
+        <div class="col-lg-2">
+            <span>Príbuzný väzeň:</span>
+        </div>
+        <div class="col-10">
+            <h6>{{ request.prisoner.first_name }} {{ request.prisoner.last_name }} | {{ request.prisoner.prisoner_num }}</h6>
+        </div>
+
+        <div class="col-lg-2">
+            <span>Odôvodnenie:</span>
+        </div>
+        <div class="col-10">
+            <h6>{{ request.reason }}</h6>
+        </div>
+
+        <div class="col-lg-2">
+            <span>Odpoveď:</span>
+        </div>
+        <div class="col-10">
+            <h6>{{ request.answer }}</h6>
+        </div>
+
+        <div class="col-lg-2">
+            <span>Stav:</span>
+        </div>
+        <div class="col-10">
+            <h6>{{ request.get_state_display }}</h6>
+        </div>
+    </div>
+
+</div>
+
+
+
+{% endblock %}

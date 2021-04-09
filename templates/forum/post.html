@@ -41,6 +41,13 @@
                             </div>
                         </div>
                         <div class="col-lg-9 col-xl-10 col-md-12 bg-light border-bottom border-start">
+                            {% if post.creator.id == user.id %}
+                                <div class="d-block mt-2">
+                                <a href="{% url 'edit_post' post.id %}">
+                                    <button class="btn btn-sm btn-warning float-end">Upravit</button>
+                                </a>
+                                </div>
+                            {% endif %}
                             <div class="px-3 pt-2">
                                 {{ post.text.html|safe }}
                             </div>
@@ -72,7 +79,9 @@
                         <div class="col-lg-9 col-xl-10 col-md-12 border-bottom border-start py-2">
                                 {% if comment.forum_comment.creator.id == user.id %}
                                     <div class="d-block mt-2">
+                                    <a href="{% url 'edit_comment' comment.forum_comment.id %}">
                                         <button id="edit-{{ comment.forum_comment.id }}" class="btn btn-sm btn-warning float-end">Upravit</button>
+                                    </a>
                                         <button type="button" id="delete-{{ comment.forum_comment.id }}" onclick="openModal(this)"
                                                 class="btn btn-sm btn-danger float-end mx-3" >Vymazat</button>
 

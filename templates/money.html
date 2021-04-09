@@ -1,0 +1,134 @@
+{% extends 'index.html' %}
+{% block title %}Peňažné prostriedky pre väzňa{% endblock %}
+{% block content %}
+    <div class="container mt-3">
+        <div class="row">
+            <h1>Prijímanie peňažných prostriedkov</h1>
+            <span>Väznenej osobe môžu byť zasielané peňažné prostriedky v eurách:<br/>
+                <b>A) poukazom poštového platobného styku</b><br/>
+                <b>B) bezhotovostným prevodom na účet osobitných prostriedkov ústavu</b>
+            </span>
+
+
+            <ul class="mt-3 nav nav-pills mb-3" id="pills-tab" role="tablist">
+              <li class="nav-item" role="presentation">
+                <a class="btn-secondary me-1 nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-vzor"
+                   type="button" role="tab" aria-controls="pills-home" aria-selected="true">Vzor</a>
+              </li>
+                {% for prisoner in prisoners %}
+                  <li class="nav-item" role="presentation">
+                    <a class="btn-secondary me-1 nav-link" id="pills-profile-tab" data-bs-toggle="pill"
+                       data-bs-target="#pills-{{ prisoner.prisoner_id.id }}" type="button" role="tab"
+                       aria-controls="pills-{{ prisoner.prisoner_id.id }}" aria-selected="false">
+                        {{ prisoner.prisoner_id.first_name }} {{ prisoner.prisoner_id.last_name }}</a>
+                  </li>
+                {% endfor %}
+
+            </ul>
+            <div class="tab-content" id="pills-tabContent">
+              <div class="tab-pane fade show active" id="pills-vzor" role="tabpanel" aria-labelledby="pills-vzor-tab">
+                  <span class="mt-3 ps-4">
+                <b>A) Poukaz poštového platobného styku (tzv. poštová poukážka na adresu a na účet) obsahuje:</b><br/>
+            </span>
+            <span class="ps-5 d-block">
+                • Meno, priezvisko:<br/>
+                • Názov ústavu:<br/>
+                • Sídlo ústavu:<br/>
+                • Korešpondenčná adresa ústavu:<br/>
+                • Poznámka pre prijímateľa (identifikácia príjemcu): meno a priezvisko, dátum narodenia, základné číslo väznenej
+                osoby, ktorej sú peňažné prostriedky zasielané<br/>
+            </span>
+            <h6 class="mt-3">
+                Po identifikácii prijímateľa z poštovej poukážky sa peňažné prostriedky preberú z poštového úradu
+                oprávnenou osobou ústavu a následne sa zaevidujú na konto väznenej osoby; informáciu o príjme peňažných
+                prostriedkov väznená osoba potvrdí svojím podpisom.
+                <a href="{% url 'departments' %}">Zoznam ústavov ako aj ich bankové spojenia.</a>
+            </h6>
+            <span class="mt-3 ps-4">
+                <b>
+    B) Bezhotovostný prevod peňažných prostriedkov na účet osobitných prostriedkov ústavu </b>
+                (tzv. bankový prevod na účet ústavu)<br/>
+            </span>
+            <ul style="list-style: none" class="ps-5 mt-0">
+                <li><span>Banka príjemcu - sprostredkujúca banka</span></li>
+                <li>
+                    <ul style="list-style: none">
+                        <li class="text-decoration-none">Všeobecná úverová banka, a.s.</li>
+                        <li class="text-decoration-none">Mlynske Nivy 1</li>
+                        <li class="text-decoration-none">829 90 Bratislava</li>
+                        <li class="text-decoration-none">Slovakia</li>
+                    </ul>
+                </li>
+                <li><span>BIC/SWIFT: <b>SUBASKBX</b></span></li>
+                <li><span>Číslo účtu príjemcu: <b>SKxx 8180 xxxx xxxx xxxx xxxx (účet osobitných prostriedkov ústavu)</b></span></li>
+                <li><span>Názov účtu príjemcu: <b>(názov účtu ústavu)</b></span></li>
+                <li><span>Adresa príjemcu: <b>(adresa ústavu)</b></span></li>
+                <li><span>Variabilný symbol: <b>(základné číslo väznenej osoby, príp. dátum narodenia)</b></span></li>
+                <li><span>Účel prevodu: <b>(meno a priezvisko väznenej osoby, dátum narodenia, príp. základné číslo)</b></span></li>
+            </ul>
+            <h6 class="mt-3">Po identifikácii prijímateľa peňažných prostriedkov budú peňažné prostriedky zaevidované na konto
+                väznenej osoby; informáciu o príjme týchto peňažných prostriedkov väznená osoba potvrdí svojím
+                podpisom.
+            </h6>
+
+              </div>
+              {% for prisoner in prisoners %}
+                  <div class="tab-pane fade" id="pills-{{ prisoner.prisoner_id.id }}" role="tabpanel"
+                       aria-labelledby="pills-{{ prisoner.prisoner_id.id }}-tab">
+
+                  <span class="mt-3 ps-4">
+                        <b>A) Poukaz poštového platobného styku (tzv. poštová poukážka na adresu a na účet) obsahuje:</b><br/>
+                    </span>
+                    <span class="ps-5 d-block">
+                        • Meno, priezvisko: <b>{{ prisoner.user_id.first_name }} {{ prisoner.user_id.last_name }}</b><br/>
+                        • Názov ústavu: <b>{{ prisoner.prisoner_id.department.name }}</b><br/>
+                        • Sídlo ústavu: <b>{{ prisoner.prisoner_id.department.address }}</b><br/>
+                        • Korešpondenčná adresa ústavu: <b>{{ prisoner.prisoner_id.department.acc_adr  }}</b><br/>
+                        • Poznámka pre prijímateľa (identifikácia príjemcu): <b>{{ prisoner.prisoner_id.first_name}}
+                        {{ prisoner.prisoner_id.last_name }}, {{ prisoner.prisoner_id.date_of_birth }},
+                        {{ prisoner.prisoner_id.prisoner_num}}</b><br/>
+                    </span>
+                    <h6 class="mt-3">
+                        Po identifikácii prijímateľa z poštovej poukážky sa peňažné prostriedky preberú z poštového úradu
+                        oprávnenou osobou ústavu a následne sa zaevidujú na konto väznenej osoby; informáciu o príjme peňažných
+                        prostriedkov väznená osoba potvrdí svojím podpisom.
+                    </h6>
+                    <span class="mt-3 ps-4">
+                        <b>
+            B) Bezhotovostný prevod peňažných prostriedkov na účet osobitných prostriedkov ústavu </b>
+                        (tzv. bankový prevod na účet ústavu)<br/>
+                    </span>
+                    <ul style="list-style: none" class="ps-5 mt-0">
+                        <li><span>Banka príjemcu - sprostredkujúca banka</span></li>
+                        <li>
+                            <ul style="list-style: none">
+                                <li class="text-decoration-none">Všeobecná úverová banka, a.s.</li>
+                                <li class="text-decoration-none">Mlynske Nivy 1</li>
+                                <li class="text-decoration-none">829 90 Bratislava</li>
+                                <li class="text-decoration-none">Slovakia</li>
+                            </ul>
+                        </li>
+                        <li><span>BIC/SWIFT: <b>SUBASKBX</b></span></li>
+                        <li><span>Číslo účtu príjemcu: <b>{{ prisoner.prisoner_id.department.iban }}</b></span></li>
+                        <li><span>Názov účtu príjemcu: <b>{{ prisoner.prisoner_id.department.acc_name }}</b></span></li>
+                        <li><span>Adresa príjemcu: <b>{{ prisoner.prisoner_id.department.address }}</b></span></li>
+                        <li><span>Variabilný symbol: <b>{{ prisoner.prisoner_id.prisoner_num }}</b> alebo
+                            <b>{{ prisoner.prisoner_id.date_of_birth|date:"dmY" }}</b></span></li>
+                        <li><span>Účel prevodu:  <b>{{ prisoner.prisoner_id.first_name}}
+                        {{ prisoner.prisoner_id.last_name }}, {{ prisoner.prisoner_id.date_of_birth }},
+                        {{ prisoner.prisoner_id.prisoner_num}}</b></span></li>
+                    </ul>
+                    <h6 class="mt-3">Po identifikácii prijímateľa peňažných prostriedkov budú peňažné prostriedky zaevidované na konto
+                        väznenej osoby; informáciu o príjme týchto peňažných prostriedkov väznená osoba potvrdí svojím
+                        podpisom.
+                    </h6>
+
+                  </div>
+              {% endfor %}
+            </div>
+
+
+
+        </div>
+    </div>
+{% endblock %}

@@ -5,7 +5,9 @@
 
         <div class="d-flex justify-content-between">
             <h1>Fórum</h1>
-            <button class="btn btn-outline-success">Vytvorit novy prispevok</button>
+            <a href="{% url 'new_post' %}">
+                <button class="btn btn-success">Vytvoriť nový príspevok</button>
+            </a>
         </div>
         <div class="d-block float-start w-100 mt-3">
         {% for res in result %}
@@ -16,7 +18,7 @@
             {% if res.posts %}
                 {% for post in res.posts %}
                     <a href="{% url 'post_view' post.post.id %}" class="text-decoration-none text-dark">
-                    <div class="px-3 bg-light d-flex">
+                    <div class="px-3 bg-light d-flex pt-2 mt-3">
                         <div class="flex-grow-1">
                             <h6>{{ post.post.title }}</h6>
                             {% if post.comment %}
@@ -40,6 +42,11 @@
                 {% endfor %}
             {% else %}
                 <div class="px-3 bg-light py-2">Zatial ziadne prispevky</div>
+            {% endif %}
+            {% if res.posts.has_next %}
+                <a href="{% url 'category_view' res.category.id %}" class="text-center col-12 d-block mt-2 mb-2">
+                    Načítaj ďalšie príspevky
+                </a>
             {% endif %}
             </div>
         {% endfor %}
