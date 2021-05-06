@@ -4,11 +4,11 @@ from django import forms
 from functools import partial
 
 from django.contrib.auth.forms import UserCreationForm
-from django.forms import Select
+from django.forms import Select, ModelForm
 from django_quill.forms import QuillFormField
 
 from Test_BP import settings
-from core.models import User, Cities
+from core.models import User, Cities, ForumCategory, Requests
 
 DateInput = partial(forms.DateInput, {'class': 'datepicker'})
 
@@ -52,3 +52,30 @@ class ForumPostForm(forms.Form):
 
     class Media:
         js = ('js/forum_post.js',)
+
+
+class ForumEditForm(forms.Form):
+    title = forms.CharField()
+    text = QuillFormField()
+
+    class Media:
+        js = ('js/edit_post.js',)
+
+
+class ForumCreateForm(forms.Form):
+    category = forms.ModelChoiceField(queryset=ForumCategory.objects.all(), empty_label=None, required=True)
+    title = forms.CharField(required=True)
+    text = QuillFormField()
+
+    class Media:
+        js = ('js/create_post.js',)
+
+
+class RequestVisitForm(ModelForm):
+    class Meta:
+        model = Requests
+        fields = ['prisoner', 'type', 'reason']
+        labels = {'prisoner': 'Väzeň',
+                  'type': 'Typ žiadosti',
+                  'reason': 'Odôvodnenie'}
+

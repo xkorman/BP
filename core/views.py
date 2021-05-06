@@ -1,4 +1,5 @@
 import ast
+import datetime
 import json
 import locale
 import re
@@ -7,33 +8,40 @@ from urllib.request import urlopen
 
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
 from django.core import serializers
 from django.core.paginator import Paginator
 from django.db.models import Model, Q
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http.response import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from django.views.generic import TemplateView
 from django_quill.quill import Quill
+from model_utils.models import now
 
 from core.models import Questions, Cities, User, MatchPrisoner, Prisoner, Message, MatchPages, GroupPage, ForumCategory, \
-    ForumPost, ForumComment, MatchForumComment
+    ForumPost, ForumComment, MatchForumComment, News, Department, Requests
 
 from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponse
 from django.template.loader import render_to_string
 from weasyprint import HTML
 
-from .forms import RequestInfoForm, RequestInfoFormOnline, SignUpForm, MessagesForm, ForumPostForm
+from .forms import RequestInfoForm, RequestInfoFormOnline, SignUpForm, MessagesForm, ForumPostForm, ForumEditForm, \
+    ForumCreateForm, RequestVisitForm
 
 
-class InfoView(TemplateView):
-    template_name = 'home.html'
+# template_name = 'home.html'
 
 
 def index(request):
     return HttpResponse(template='index.html')
+
+
+def InfoView(request):
+    news = News.objects.filter(visible=True).order_by('id')
+    return render(request, 'home.html', {'news': news})
 
 
 def faq(request):
@@ -54,21 +62,31 @@ def render_pdf_view(data):
         return response
 
 
+def get_prisoner_values(request):
+    id = request.POST['id']
+    prisoner = Prisoner.objects.filter(id=id).first()
+    return JsonResponse(data={
+        'first_name': prisoner.first_name,
+        'last_name': prisoner.last_name,
+        'date_of_birth': prisoner.date_of_birth,
+        'prisoner_num': prisoner.prisoner_num,
+    })
+
+
 def get_request_data(request):
     if request.method == 'POST':
-        # create a form instance and populate it with data from the request:
         form = RequestInfoForm(request.POST)
-        # check whether it's valid:
         if form.is_valid():
             data = form.data
-            # process the data in form.cleaned_data as required
-            # ...
-            # redirect to a new URL:
             return render_pdf_view(data)
 
-        # if a GET (or any other method) we'll create a blank form
     else:
-        form = RequestInfoForm()
+        if request.user.is_authenticated:
+            user = request.user
+            form = RequestInfoForm({'client_name': user.first_name + " " + user.last_name,
+                                    'client_address': user.street + ", " + user.city.municipalityName})
+        else:
+            form = RequestInfoForm({'client_name': "", 'client_address': ""})
 
     return render(request, 'ziadost_info_get_data.html', {'form': form})
 
@@ -100,7 +118,8 @@ def related_view(request):
 
 @login_required(login_url='login')
 def requests_view(request):
-    return render(request, 'requests.html')
+    requests = Requests.objects.filter(user_id=request.user.id).order_by('-edited_at')
+    return render(request, 'requests.html', {'requests': requests})
 
 
 def get_city():
@@ -266,29 +285,30 @@ def load_departments():
         web = None
         if match:
             web = match.group(1)
-
+        lat = str(d['attributes']['Latitude'])
+        long = str(d['attributes']['Longitude'])
         department.append({'FID': id, 'name': name, 'type': type, 'info': info, 'address': address, 'email': email,
-                           'tel': tel, 'web': web})
+                           'tel': tel, 'web': web, 'lat': lat, 'long': long})
     return department
 
 
 def departments(request):
-    department = load_departments
+    department = Department.objects.all()
     return render(request, 'departments.html', {'data': department})
 
 
 @login_required(login_url='login')
 def profile_view(request):
     prisoners = get_prisoners(request.user.id)
-    department = load_departments()
-    new_dict = {}
-    list_of_prisoners = []
-    for prisoner in prisoners:
-        new_dict = {"prisoner": prisoner, "departments":
-            next(item for item in department if item["FID"] == prisoner[1].id)}
-        list_of_prisoners.append(new_dict)
+    # department = load_departments()
+    # new_dict = {}
+    # list_of_prisoners = []
+    # for prisoner in prisoners:
+    #     new_dict = {"prisoner": prisoner, "departments":
+    #         next(item for item in department if item["FID"] == prisoner[1].id)}
+    #     list_of_prisoners.append(new_dict)
 
-    return render(request, 'profile.html', {'list_of_prisoners': list_of_prisoners})
+    return render(request, 'profile.html', {'list_of_prisoners': prisoners})
 
 
 def support(request):
@@ -309,10 +329,18 @@ def forum_view(request):
         list_post = []
         for post in posts:
             c = MatchForumComment.objects.filter(forum_post_id=post.id).order_by('-forum_comment__edited_at').first()
-            list_post.append({'post': post, 'comment': c})
-        new_d = {'category': category, 'posts': list_post}
+            if c:
+                list_post.append({'post': post, 'comment': c, 'edited_at': c.forum_comment.edited_at})
+                print(c.forum_comment.edited_at)
+            else:
+                list_post.append({'post': post, 'comment': c, 'edited_at': post.created_at})
+                print(datetime.datetime.now())
+        list_post = sorted(list_post, key=lambda i: i['edited_at'], reverse=True)
+        paginator = Paginator(list_post, 5)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        new_d = {'category': category, 'posts': page_obj}
         result.append(new_d)
-    print(result)
     return render(request, 'forum/forum.html', {'result': result})
 
 
@@ -323,14 +351,23 @@ def category_view(request, category_id):
     list_post = []
     for post in posts:
         c = MatchForumComment.objects.filter(forum_post_id=post.id).order_by('-forum_comment__edited_at').first()
-        list_post.append({'post': post, 'comment': c})
-    return render(request, 'forum/category.html', {'category': category, 'result': list_post})
+        if c:
+            list_post.append({'post': post, 'comment': c, 'edited_at': c.forum_comment.edited_at})
+            print(c.forum_comment.edited_at)
+        else:
+            list_post.append({'post': post, 'comment': c, 'edited_at': post.created_at})
+            print(datetime.datetime.now())
+    list_post = sorted(list_post, key=lambda i: i['edited_at'], reverse=True)
+    paginator = Paginator(list_post, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'forum/category.html', {'category': category, 'result': page_obj})
 
 
 @login_required(login_url='login')
 def post_view(request, post_id):
     post = ForumPost.objects.filter(id=post_id).first()
-    match = MatchForumComment.objects.filter(forum_post=post_id)
+    match = MatchForumComment.objects.filter(forum_post=post_id).order_by('forum_post__created_at')
     paginator = Paginator(match, 4)
 
     page_number = request.GET.get('page')
@@ -356,7 +393,113 @@ def send_forum_post(request):
         html = html.rsplit('"', 1)[1]
         quill = get_quill(request.POST['text'], html)
         post = ForumPost.objects.filter(id=request.POST['post_id']).first()
-        comment = ForumComment.objects.create(text=quill, creator_id=request.user.id)
+        comment = ForumComment.objects.create(created_at=now, text=quill, creator_id=request.user.id)
         match = MatchForumComment.objects.create(forum_comment=comment, forum_post=post)
         return HttpResponse("Success")
     return HttpResponse("Fail")
+
+
+@login_required()
+def delete_comment(request):
+    id = request.POST['id']
+    comment = ForumComment.objects.filter(id=id)
+    match = MatchForumComment.objects.filter(forum_comment_id=id)
+    if comment.delete() and match.delete():
+        return HttpResponse("Success")
+    return HttpResponse("Fail")
+
+
+@login_required(login_url='login')
+def edit_comment(request, post_id):
+    comment = ForumComment.objects.filter(id=post_id).first()
+    category = MatchForumComment.objects.filter(forum_comment_id=post_id).first()
+
+    # return redirect(forum_view)
+    return render(request, 'forum/edit_comment.html', {'post': comment, 'category': category})
+
+
+@login_required(login_url='login')
+def edit_post(request, post_id):
+    post = ForumPost.objects.filter(id=post_id).first()
+    if post:
+        form = ForumEditForm(initial={'title': post.title, 'text': post.text})
+    else:
+        return redirect(forum_view)
+    return render(request, 'forum/edit_post.html', {'post': post, 'form': form})
+
+
+@login_required()
+def edit_comment_back(request):
+    html = request.POST['html'].rsplit('"', 1)[0]
+    html = html.rsplit('"', 1)[1]
+    quill = get_quill(request.POST['text'], html)
+    post = ForumPost.objects.filter(id=request.POST['post_id']).first()
+    if post.creator.id == request.user.id:
+        post.title = request.POST['title']
+        post.text = quill
+        if post.save():
+            return HttpResponse("Success")
+    return HttpResponse("Fail")
+
+
+@login_required()
+def edit_comment_back2(request):
+    html = request.POST['html'].rsplit('"', 1)[0]
+    html = html.rsplit('"', 1)[1]
+    quill = get_quill(request.POST['text'], html)
+    comment = ForumComment.objects.filter(id=request.POST['post_id']).first()
+    if comment and comment.creator.id == request.user.id:
+        comment.text = quill
+        comment.save()
+        return HttpResponse("Success")
+    return HttpResponse("Fail")
+
+
+@login_required(login_url='login')
+def new_post(request):
+    form = ForumCreateForm()
+    if request.method == 'POST':
+        form = ForumCreateForm(request.POST)
+        html = request.POST['html'].rsplit('"', 1)[0]
+        html = html.rsplit('"', 1)[1]
+        quill = get_quill(request.POST['text'], html)
+        post = ForumPost(title=request.POST['title'], text=quill, creator_id=request.user.id,
+                         category_id=request.POST['category'])
+        if html != '' and request.POST['title'] != '':
+            post.save()
+            return HttpResponse("Success")
+        return HttpResponse("Fail")
+    return render(request, 'forum/new_post.html', {'form': form})
+
+
+def money(request):
+    prisoners = MatchPrisoner.objects.filter(user_id=request.user.id)
+    return render(request, 'money.html', {'prisoners': prisoners})
+
+
+@login_required(login_url='login')
+def visit(request):
+    prisoners = MatchPrisoner.objects.filter(user_id=request.user.id)
+    if not prisoners:
+        return render(request, 'visit.html')
+    else:
+        if request.method == 'POST':
+            form = RequestVisitForm(request.POST)
+            if form.is_valid():
+                prisoner = Prisoner.objects.get(id=request.POST['prisoner'])
+                new_request = Requests.objects.create(reason=request.POST['reason'], type=request.POST['type'],
+                                                      prisoner=prisoner, user=request.user)
+                new_request.save()
+                messages.success(request, 'Žiadosť úspešne odoslana')
+                form = RequestVisitForm()
+                return redirect(visit)
+        else:
+            form = RequestVisitForm()
+        return render(request, 'visit.html', {'form': form, 'prisoners': prisoners})
+
+
+@login_required(login_url='login')
+def info_detail(request, req_id):
+    request_detail = get_object_or_404(Requests, pk=req_id, user=request.user.id)
+    print(request_detail)
+    return render(request, 'request_detail.html', {'request': request_detail})

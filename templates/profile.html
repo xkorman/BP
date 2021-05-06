@@ -15,11 +15,9 @@
                   <li class="nav-item">
                     <a class="nav-link" href="{% url 'requests' %}">Žiadosti</a>
                   </li>
+
                   <li class="nav-item">
-                    <a class="nav-link" href="#">Zmena údajov</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="{% url 'messages_page' %}">Spravy</a>
+                    <a class="nav-link" href="{% url 'messages_page' %}">Správy</a>
                   </li>
                     {% if user.is_staff %}
                     <li class="nav-item">

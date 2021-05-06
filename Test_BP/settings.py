@@ -16,7 +16,6 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
@@ -27,7 +26,6 @@ SECRET_KEY = '70l8sf9t^1&=$=ier8l$%aw(419y6%iqf2f7g2p!m$q7%*o59!'
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -41,6 +39,7 @@ INSTALLED_APPS = [
     'core',
     'crispy_forms',
     'django_quill',
+    'admin_reorder',
     # 'channels',
     # 'django_private_chat',
 ]
@@ -53,6 +52,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'admin_reorder.middleware.ModelAdminReorder',
 ]
 
 ROOT_URLCONF = 'Test_BP.urls'
@@ -92,7 +92,6 @@ DATABASES = {
     }
 }
 
-
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
 
@@ -111,7 +110,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
@@ -124,7 +122,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
@@ -154,5 +151,52 @@ AUTH_USER_MODEL = 'core.User'
 #
 # ASGI_APPLICATION = "Test_BP.asgi.application"
 
-
 locale.setlocale(locale.LC_ALL, 'sk_SK.UTF-8')
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'MEDIA')
+MEDIA_URL = "/media/"
+
+ADMIN_REORDER = (
+
+    {'app': 'core', 'label': 'Forum',
+     'models': (
+         'core.ForumCategory',
+         'core.ForumPost',
+         'core.ForumComment',
+         'core.MatchForumComment',
+     )
+     },
+
+    {'app': 'core', 'label': 'System sprav',
+     'models': (
+         'core.Message',
+     )
+     },
+
+    {'app': 'core', 'label': 'System stranok podpory',
+     'models': (
+         'core.Page',
+         'core.GroupPage',
+         'core.MatchPages',
+         'core.Questions'
+     )
+     },
+
+    {'app': 'core', 'label': 'System prezentacnych slajdov',
+     'models': (
+         'core.News',
+     )
+     },
+
+    {'app': 'core', 'label': 'Sprava uzivatelov a vaznov',
+     'models': (
+         'core.User',
+         'core.Prisoner',
+         'core.MatchPrisoner',
+         'core.Department',
+         'core.Requests'
+     )
+     },
+
+    'auth',
+)
