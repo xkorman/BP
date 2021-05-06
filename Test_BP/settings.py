@@ -13,6 +13,8 @@ import locale
 import os
 from pathlib import Path
 
+env = os.environ.copy()
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -84,10 +86,10 @@ DATE_INPUT_FORMATS = ['%d-%m-%Y']
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
+        'NAME': 'postgres_db',
         'USER': 'postgres',
-        'PASSWORD': 'admin',
-        'HOST': '127.0.0.1',
+        'PASSWORD': 'postgres',
+        'HOST': 'db',
         'PORT': '5432',
     }
 }
@@ -150,8 +152,8 @@ AUTH_USER_MODEL = 'core.User'
 # CHAT_WS_SERVER_PROTOCOL = 'ws'
 #
 # ASGI_APPLICATION = "Test_BP.asgi.application"
-
-locale.setlocale(locale.LC_ALL, 'sk_SK.UTF-8')
+#
+# locale.setlocale(locale.LC_ALL, 'sk_SK.UTF-8')
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'MEDIA')
 MEDIA_URL = "/media/"

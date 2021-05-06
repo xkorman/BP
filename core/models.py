@@ -1,3 +1,6 @@
+import datetime
+from datetime import timezone
+
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django_quill.fields import QuillField
@@ -28,9 +31,9 @@ class User(AbstractUser):
         null=False,
         default='M'
     )
-    city = models.ForeignKey(Cities, on_delete=models.CASCADE)
+    city = models.ForeignKey(Cities, on_delete=models.CASCADE, null=True)
     street = models.TextField(null=False)
-    date_of_birth = models.DateField(blank=False)
+    date_of_birth = models.DateField(blank=False, default=datetime.date.today)
 
     class Meta:
         verbose_name_plural = 'Uzivatelia'
