@@ -163,7 +163,7 @@ class ForumPost(models.Model):
     title = models.TextField(max_length=1024, blank=False, null=False)
     category = models.ForeignKey(ForumCategory, on_delete=models.CASCADE, related_name='category')
     creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name='post_user')
-    created_at = models.DateTimeField(auto_now=False)
+    created_at = models.DateTimeField(auto_now_add=True)
     edited_at = models.DateTimeField(auto_now=True)
     text = QuillField()
 
@@ -220,7 +220,7 @@ class Requests(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE,verbose_name='Používateľ')
     prisoner = models.ForeignKey(Prisoner, on_delete=models.CASCADE, verbose_name='Väzeň')
     reason = models.TextField(verbose_name='Odôvodnenie')
-    created_at = models.DateTimeField(auto_now=False, verbose_name='Vytvorené')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Vytvorené')
     edited_at = models.DateTimeField(auto_now=True, verbose_name='Upravené',)
     answer = models.TextField(blank=True, verbose_name='Odpoveď')
 
@@ -268,3 +268,31 @@ class Requests(models.Model):
         return self.user.first_name + " " + self.user.last_name + " | " + self.prisoner.prisoner_num + " | " + \
                self.get_type_name()
 
+
+class RequestsInfo(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Používateľ')
+    reason = models.TextField(verbose_name='Odôvodnenie')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Vytvorené')
+    edited_at = models.DateTimeField(auto_now=True, verbose_name='Upravené',)
+    answer = models.TextField(blank=True, verbose_name='Odpoveď')
+
+    States = (
+        ('R', 'Rieši sa',),
+        ('S', 'Schválená',),
+        ('F', 'Zamietnutá',),
+        ('P', 'Poslaná',),
+    )
+
+    state = models.CharField(
+        max_length=1,
+        choices=States,
+        null=False,
+        default='P',
+        verbose_name='Status'
+    )
+
+    class Meta:
+        verbose_name_plural = 'Žiadosti o pridelenie informácií o väzňovi'
+
+    def __str__(self):
+        return self.user.first_name + " " + self.user.last_name

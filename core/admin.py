@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
 from core.models import User, Questions, Department, Prisoner, MatchPrisoner, GroupPage, Page, MatchPages, \
-    ForumCategory, ForumComment, ForumPost, MatchForumComment, News, Requests, Message
+    ForumCategory, ForumComment, ForumPost, MatchForumComment, News, Requests, Message, RequestsInfo
 
 
 class MyUserAdmin(UserAdmin):
@@ -94,6 +94,9 @@ class RequestsAdmin(admin.ModelAdmin):
                      'prisoner__prisoner_num', 'prisoner__department__name']
 
 
+class RequestsInfoAdmin(admin.ModelAdmin):
+    fields = ['user', 'reason', 'answer', 'state']
+
 
 admin.site.register(User, MyUserAdmin)
 admin.site.register(Questions, QuestionAdmin)
@@ -109,3 +112,4 @@ admin.site.register(MatchForumComment, MatchForumPostsAdmin)
 admin.site.register(News, NewsAdmin)
 admin.site.register(Department, DepartmentAdmin)
 admin.site.register(Requests, RequestsAdmin)
+admin.site.register(RequestsInfo, RequestsInfoAdmin)

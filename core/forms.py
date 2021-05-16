@@ -25,11 +25,7 @@ class RequestInfoForm(forms.Form):
 
 
 class RequestInfoFormOnline(forms.Form):
-    client_name = forms.CharField(label='Povinná osoba, ktorej je žiadosť určená: ', required=True)
-    client_address = forms.CharField(label='Adresa povinnej osoby:', required=True)
-    sender_name = forms.CharField(label='Meno a priezvisko, názov alebo obchodné meno žiadateľa:', required=True)
-    sender_address = forms.CharField(label='Adresa pobytu alebo sídlo žiadateľa: ', required=True)
-    sender_address.help_text = 'ulica, číslo domu, mesto, PSČ'
+    text = forms.CharField(widget=forms.Textarea, required=True, label='Text žiadosti')
 
 
 class SignUpForm(UserCreationForm):

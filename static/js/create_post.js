@@ -1,7 +1,7 @@
 var quill = new Quill('#editor');
 
 $("#FormComment").submit(function(e) {
-
+alert("ok");
 var html = JSON.stringify(quill.root.innerHTML);
 var titlevalue = document.getElementsByName('title')[0].value;
 var category = document.getElementsByName('category')[0].value;

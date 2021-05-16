@@ -196,7 +196,8 @@ ADMIN_REORDER = (
          'core.Prisoner',
          'core.MatchPrisoner',
          'core.Department',
-         'core.Requests'
+         'core.Requests',
+         'core.RequestsInfo'
      )
      },
 

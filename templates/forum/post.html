@@ -66,7 +66,7 @@
                                     <p class="text-lg-center mb-0">{{ comment.forum_comment.creator.username }}</p>
                                 </div>
                                 <div class="text-sm-end text-lg-start">
-                                {% if comment.forum_comment.created_at|date:"d-m-Y H:M" != comment.forum_comment.edited_at|date:"d-m-Y H:M" %}
+                                {% if comment.forum_comment.created_at|date:"YmdHis" != comment.forum_comment.edited_at|date:"YmdHis" %}
                                     <p class="small px-2 mb-0">Pridane: {{ comment.forum_comment.created_at }}</p>
                                     <p class="small px-2 mb-0">Editovane: {{ comment.forum_comment.edited_at }}</p>
                                     <p class="small px-2 mb-0"></p>

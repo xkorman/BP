@@ -21,7 +21,7 @@ from django_quill.quill import Quill
 from model_utils.models import now
 
 from core.models import Questions, Cities, User, MatchPrisoner, Prisoner, Message, MatchPages, GroupPage, ForumCategory, \
-    ForumPost, ForumComment, MatchForumComment, News, Department, Requests
+    ForumPost, ForumComment, MatchForumComment, News, Department, Requests, RequestsInfo
 
 from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponse
@@ -96,6 +96,8 @@ def get_info_request(request):
     if request.method == 'POST':
         form = RequestInfoFormOnline(request.POST)
         if form.is_valid():
+            req = RequestsInfo.objects.create(reason=form.cleaned_data['text'], user_id=request.user.id)
+            req.save()
             return render(request, 'online_ziadost.html')
     else:
         form = RequestInfoFormOnline
@@ -459,6 +461,7 @@ def edit_comment_back2(request):
 def new_post(request):
     form = ForumCreateForm()
     if request.method == 'POST':
+        print("here")
         form = ForumCreateForm(request.POST)
         html = request.POST['html'].rsplit('"', 1)[0]
         html = html.rsplit('"', 1)[1]
